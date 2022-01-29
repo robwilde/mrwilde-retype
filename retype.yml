@@ -1,5 +1,5 @@
 input: retype
-output: website
+output: public
 url: https://mrwilde.dev
 branding:
   title: MrWilde Dev Stuff
