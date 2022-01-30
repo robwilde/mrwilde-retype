@@ -15,5 +15,3 @@ I can't stop learning, it keeps me feeling young and gets me out of bed every da
 
 When I am not writing code I love to build PC's, go for rides on one of my Motorcycles or I will be watching another video 
 on Liquid Fluoride Thorium Reactors.
-
-

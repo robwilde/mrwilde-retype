@@ -37,3 +37,7 @@ footer:
   links:
     - text: About Mr Wilde
       link: about.md
+
+intergrations:
+  crisp:
+    id: 94df3bad-21cf-4960-aca6-3651f0db22f4
