@@ -10,4 +10,4 @@ books, courses, videos etc. You can see most of my training history via the [Deg
 As much as I like that site has numerous issues with its functionality and has not changed much in the 5 years I have been using it. I decided I should
 have my own online reference for these, if only for my personal reflection and study. If you find any of this info useful or helpful then fantastic.
 If you have any questions about any of the info provided, feel free to reach out maybe via Twitter or 
-my special email [questions@mrwilde.com](questions@mrwilde.com)
+my special email [questions@mrwilde.com](mailto:questions@mrwilde.com)
