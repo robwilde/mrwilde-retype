@@ -49,7 +49,7 @@ date: 2021-10-13T17:34
 
 # New Blog Post
 
-Blog post content goes herre.
+Blog post content goes here.
 ```
 
 Blog posts created this way won't have [navigation buttons](#nextprevious-handles) and won't be included to [posts' summary](#blog-posts-summary) or [RSS feed](#rss-feed).
