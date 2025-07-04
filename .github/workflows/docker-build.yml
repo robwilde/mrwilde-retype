@@ -26,6 +26,20 @@ jobs:
     - name: Build Retype site
       uses: retypeapp/action-build@latest
       id: build
+      with:
+        verbose: true
+        output: public
+
+    - name: Debug - Check Retype output
+      run: |
+        echo "Retype output path: ${{ steps.build.outputs.retype-output-path }}"
+        echo "Contents of output directory:"
+        ls -la "${{ steps.build.outputs.retype-output-path }}"
+        
+    - name: Copy Retype output to public directory
+      run: |
+        mkdir -p public
+        cp -r "${{ steps.build.outputs.retype-output-path }}"/* public/
       
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
