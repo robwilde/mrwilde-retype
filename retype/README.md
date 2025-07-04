@@ -6,7 +6,7 @@ icon: home
 
 That's my motto. I like it because it's about me and you, here's why...
 
-Not to get to deep, and shit, life in general is not a bunch of roses. It's hard and if I am going to make my way I need to love what I do.
+Not to get to deep and stuff, life in general is not a bunch of roses. It's hard and if I am going to make my way I need to love what I do.
 It's my suggestion to you as well, to love your work. 
 
 But that's not all. It's my way of showing appreciation of the effort you have put into what ever it is your doing. It must be good as it has my 
