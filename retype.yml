@@ -28,15 +28,8 @@ links:
   - text: MixCloud
     link: https://www.mixcloud.com/robert-wilde3
     icon: meter
-
-  - text: Degreed
-    link: https://degreed.com/profile/mrwilde/skills
-    icon: mortar-board
 footer:
   copyright: "&copy; Copyright {{ year }}. All rights reserved."
   links:
     - text: About Mr Wilde
       link: about.md
-integrations:
-  crisp:
-    id: 94df3bad-21cf-4960-aca6-3651f0db22f4
