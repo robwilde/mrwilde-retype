@@ -9,7 +9,7 @@ tags: [docker, cicd, github-actions, nginx, letsencrypt, retype]
 date: 2025-07-03
 ---
 
-# Hosting my Retype blog with CI/CD - here is my experience getting my Retype blog hosted on my home server with Docker and GitHub actions
+# Hosting my Retype blog with CI/CD
 
 Setting up a modern CI/CD pipeline for a static site generator might seem straightforward, but real-world deployment often presents unexpected challenges. Here's my journey deploying a Retype blog with Docker, GitHub Actions, and Let's Encrypt SSL certificates on my home OpenMediaVault server.
 
@@ -30,29 +30,22 @@ The final solution consists of:
 
 ## Docker Configuration
 
-### Multi-Stage Dockerfile
+### Simplified Dockerfile with GitHub Actions Build
 
-The original Dockerfile used .NET SDK, but I needed better Linux compatibility with npm:
+After optimizing the build process, the final Dockerfile became much simpler by leveraging GitHub Actions to handle the Retype build:
 
 ```dockerfile
-FROM node:18 AS builder
-WORKDIR /app
-RUN git clone https://github.com/robwilde/mrwilde-retype.git .
-RUN npm install -g retypeapp
-RUN retype build
-
 FROM nginx:alpine
-COPY --from=builder /app/_site /usr/share/nginx/html
+COPY public/ /usr/share/nginx/html/public/
 COPY deploy/nginx-standalone.conf /etc/nginx/nginx.conf
-EXPOSE 80 443
+EXPOSE 80
 ```
 
 This approach:
-- Uses Node.js 18 for consistent npm environment
-- Clones the repository directly in the container
-- Installs Retype globally via npm
-- Builds the static site
-- Serves with nginx alpine for production
+- Eliminates the multi-stage build complexity
+- Uses GitHub Actions to build the Retype site before Docker
+- Creates a lightweight nginx-only container
+- Significantly reduces build time and image size
 
 ### Nginx Configuration
 
@@ -95,41 +88,75 @@ server {
 
 ## GitHub Actions CI/CD Pipeline
 
-Automated builds trigger on every push to the develop branch:
+The key breakthrough was using the official Retype build action before creating the Docker image. This automated workflow triggers on pushes to develop, main, and master branches:
 
 ```yaml
 name: Build and Push Docker Image
 
 on:
   push:
-    branches: [ develop ]
+    branches: [ main, master, develop ]
   pull_request:
-    branches: [ develop ]
+    branches: [ main, master ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     
     steps:
-    - uses: actions/checkout@v4
-    
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Build Retype site
+      uses: retypeapp/action-build@latest
+      id: build
+      with:
+        verbose: true
+        output: public
+
+    - name: Copy Retype output to public directory
+      run: |
+        mkdir -p public
+        cp -r "${{ steps.build.outputs.retype-output-path }}"/* public/
+      
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
-    
-    - name: Log in to Docker Hub
+      
+    - name: Login to Docker Hub
       uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    
-    - name: Build and push
+
+    - name: Extract metadata
+      id: meta
+      uses: docker/metadata-action@v5
+      with:
+        images: mrwilde/mrwilde-retype
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=sha,prefix=sha-
+          type=raw,value=latest,enable={{is_default_branch}}
+          
+    - name: Build and push Docker image
       uses: docker/build-push-action@v5
       with:
         context: .
         file: ./deploy/Dockerfile
         push: true
-        tags: mrwilde/mrwilde-retype:develop
+        tags: ${{ steps.meta.outputs.tags || 'mrwilde/mrwilde-retype:latest' }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
 ```
+
+The critical insight was that the `retypeapp/action-build@latest` action outputs to a dynamic path accessible via `steps.build.outputs.retype-output-path`, which we then copy to the expected `public/` directory for Docker to use.
 
 ## Docker Compose Orchestration
 
@@ -210,6 +237,23 @@ volumes:
 **Problem**: Certbot was resolving domains to local IP instead of public IP
 
 **Solution**: Added custom DNS servers (`1.1.1.1`, `8.8.8.8`) and explicit host entries in the certbot container.
+
+### 6. Retype Build Action Output Path
+
+**Problem**: Docker build failed with "`/public`: not found" even though the Retype action was running successfully
+
+**Root Cause**: The `retypeapp/action-build@latest` action outputs to a dynamic path, not the expected `public/` directory
+
+**Solution**: Used the action's output variable `steps.build.outputs.retype-output-path` to copy the built files to the correct location:
+
+```yaml
+- name: Copy Retype output to public directory
+  run: |
+    mkdir -p public
+    cp -r "${{ steps.build.outputs.retype-output-path }}"/* public/
+```
+
+This required updating the nginx configuration to use `/usr/share/nginx/html/public` as the document root.
 
 ## Key Learnings
 
