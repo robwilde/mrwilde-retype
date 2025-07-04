@@ -4,7 +4,7 @@ author:
     avatar: https://en.gravatar.com/userimage/147698178/ba5af134d07fd7ed2f40436cf2c568ce.jpeg
     email: robert@mrwilde.com
 description: How using AI tools has made me a better developer by reducing arrogance and enhancing decision-making.
-category: Guide
+category: AI in Development
 tags: [AI, Development, Guide]
 date: 2025-06-19
 ---

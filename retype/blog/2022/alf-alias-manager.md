@@ -4,8 +4,6 @@ category: Tools
 tags: [dev, dev-environment, helpers]
 date: 2022-01-05
 ---
-# January
-
 ## Alf alias manager
 === Alf - Your Little Bash Alias Friend
 
