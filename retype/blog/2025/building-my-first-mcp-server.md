@@ -11,6 +11,8 @@ date: 2025-08-02
 
 # Building My First MCP Server: Scratching That Obsidian Itch
 
+![claude-code-mcp-obsidian.png](../../static/claude-code-mcp-obsidian.png)
+
 ## Finally, an Idea Worth Building
 
 After months of hearing about Model Context Protocol (MCP) servers and thinking "that's cool, but what would I actually build?", I finally had my moment. Like many developers, there's no better motivation to work on a project than **scratching your own itch**.
